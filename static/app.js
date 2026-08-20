@@ -561,32 +561,36 @@
   // UI METADATA & PLAYER VIEW UPDATES
   // =========================================================================
   function updateTrackMetadataUI(track) {
+    if (!track) return;
     const thumbUrl = track.thumbnail || "";
 
     // Mini Player
-    dom.miniTitle.textContent = track.title || "Unknown Title";
-    dom.miniArtist.textContent = track.artist || "Unknown Artist";
+    if (dom.miniTitle) dom.miniTitle.textContent = track.title || "Unknown Title";
+    if (dom.miniArtist) dom.miniArtist.textContent = track.artist || "Unknown Artist";
     if (thumbUrl) {
-      dom.miniThumb.src = thumbUrl;
-      dom.miniThumb.classList.remove("hidden");
-      dom.miniFallbackIcon.classList.add("hidden");
+      if (dom.miniThumb) {
+        dom.miniThumb.src = thumbUrl;
+        dom.miniThumb.classList.remove("hidden");
+      }
+      if (dom.miniThumbPlaceholder) dom.miniThumbPlaceholder.classList.add("hidden");
     } else {
-      dom.miniThumb.classList.add("hidden");
-      dom.miniFallbackIcon.classList.remove("hidden");
+      if (dom.miniThumb) dom.miniThumb.classList.add("hidden");
+      if (dom.miniThumbPlaceholder) dom.miniThumbPlaceholder.classList.remove("hidden");
     }
 
     // Full Player
-    dom.fullTrackTitle.textContent = track.title || "Unknown Title";
-    dom.fullTrackArtist.textContent = track.artist || "Unknown Artist";
-    dom.fullTrackAlbum.textContent = track.album ? `• ${track.album}` : "";
+    if (dom.fullSongTitle) dom.fullSongTitle.textContent = track.title || "Unknown Title";
+    if (dom.fullSongArtist) dom.fullSongArtist.textContent = track.artist || "Unknown Artist";
+    if (dom.fullSongAlbum) dom.fullSongAlbum.textContent = track.album ? `• ${track.album}` : "";
     if (thumbUrl) {
-      dom.fullAlbumArt.src = thumbUrl;
-      dom.fullAlbumArt.classList.remove("hidden");
-      dom.fullVinylCoverArt.src = thumbUrl;
+      if (dom.fullAlbumArt) {
+        dom.fullAlbumArt.src = thumbUrl;
+        dom.fullAlbumArt.classList.remove("hidden");
+      }
     }
 
     // Dynamic Backdrop Mesh
-    if (thumbUrl) {
+    if (thumbUrl && dom.dynamicBackdrop) {
       dom.dynamicBackdrop.style.backgroundImage = `radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.25) 0%, rgba(14, 14, 17, 0.95) 75%), url('${thumbUrl}')`;
     }
   }
