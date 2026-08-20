@@ -301,21 +301,42 @@
   // =========================================================================
   // PLAYBACK ENGINE
   // =========================================================================
+  function fallbackToYouTubeIFrame(videoId) {
+    useDirectAudio = false;
+    if (audioPlayer) {
+      try {
+        audioPlayer.pause();
+        audioPlayer.removeAttribute("src");
+      } catch (_) {}
+    }
+    if (ytPlayerReady && ytPlayer && ytPlayer.loadVideoById) {
+      ytPlayer.loadVideoById(videoId);
+    }
+  }
+
   function playWithDirectStream(track) {
     fetch(`/api/stream?videoId=${encodeURIComponent(track.videoId)}`)
       .then((r) => r.json())
       .then((data) => {
-        if (data.url) {
+        if (data && data.url) {
           useDirectAudio = true;
-          if (ytPlayerReady && ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+          if (ytPlayerReady && ytPlayer && ytPlayer.pauseVideo) {
+            try { ytPlayer.pauseVideo(); } catch (_) {}
+          }
           audioPlayer.src = data.url;
           audioPlayer.volume = state.volume / 100;
           audioPlayer.play().catch((err) => {
-            console.warn("Direct stream play error:", err);
+            console.warn("Direct stream play failed, falling back to YouTube IFrame:", err);
+            fallbackToYouTubeIFrame(track.videoId);
           });
+        } else {
+          fallbackToYouTubeIFrame(track.videoId);
         }
       })
-      .catch((e) => console.warn("Stream fetch failed:", e));
+      .catch((e) => {
+        console.warn("Stream fetch failed, falling back to YouTube IFrame:", e);
+        fallbackToYouTubeIFrame(track.videoId);
+      });
   }
 
   function playTrack(track, fromQueue = false) {

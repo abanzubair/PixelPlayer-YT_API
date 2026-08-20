@@ -20,6 +20,11 @@ def get_audio_stream_url(video_id):
             'quiet': True,
             'no_warnings': True,
             'skip_download': True,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['visionos', 'ios', 'android', 'mweb']
+                }
+            }
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
