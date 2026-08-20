@@ -788,8 +788,7 @@
   // SYNCHRONIZED KARAOKE LYRICS PARSER
   // =========================================================================
   function parseAndRenderLyrics(rawText, source) {
-    const lines = rawText.split("
-");
+    const lines = rawText.split("\n");
     const parsedLines = [];
     const lrcRegex = /^\[(\d{2}):(\d{2}(?:\.\d+)?)\](.*)$/;
 
