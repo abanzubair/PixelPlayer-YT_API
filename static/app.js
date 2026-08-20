@@ -620,15 +620,27 @@
     if (!state.currentTrack) return;
     const isLiked = state.likedSongs.some((t) => t.videoId === state.currentTrack.videoId);
     if (isLiked) {
-      dom.miniLikeBtn.classList.add("liked");
-      dom.fullLikeBtn.classList.add("liked");
-      dom.miniLikeBtn.querySelector("svg").setAttribute("fill", "currentColor");
-      dom.fullLikeBtn.querySelector("svg").setAttribute("fill", "currentColor");
+      if (dom.miniLikeBtn) {
+        dom.miniLikeBtn.classList.add("liked");
+        const svg = dom.miniLikeBtn.querySelector("svg");
+        if (svg) svg.setAttribute("fill", "currentColor");
+      }
+      if (dom.fullHeartBtn) {
+        dom.fullHeartBtn.classList.add("liked");
+        const svg = dom.fullHeartBtn.querySelector("svg");
+        if (svg) svg.setAttribute("fill", "currentColor");
+      }
     } else {
-      dom.miniLikeBtn.classList.remove("liked");
-      dom.fullLikeBtn.classList.remove("liked");
-      dom.miniLikeBtn.querySelector("svg").setAttribute("fill", "none");
-      dom.fullLikeBtn.querySelector("svg").setAttribute("fill", "none");
+      if (dom.miniLikeBtn) {
+        dom.miniLikeBtn.classList.remove("liked");
+        const svg = dom.miniLikeBtn.querySelector("svg");
+        if (svg) svg.setAttribute("fill", "none");
+      }
+      if (dom.fullHeartBtn) {
+        dom.fullHeartBtn.classList.remove("liked");
+        const svg = dom.fullHeartBtn.querySelector("svg");
+        if (svg) svg.setAttribute("fill", "none");
+      }
     }
   }
 
