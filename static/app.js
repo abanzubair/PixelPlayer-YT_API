@@ -242,8 +242,8 @@
   window.onYouTubeIframeAPIReady = function () {
     try {
       ytPlayer = new YT.Player("ytPlayer", {
-        height: "1",
-        width: "1",
+        height: "240",
+        width: "320",
         playerVars: {
           autoplay: 1,
           controls: 0,
@@ -251,6 +251,7 @@
           fs: 0,
           rel: 0,
           enablejsapi: 1,
+          playsinline: 1,
           origin: window.location.origin,
         },
         events: {
@@ -292,9 +293,10 @@
   }
 
   function onPlayerError(err) {
-    console.warn("YouTube Player error, falling back to direct stream:", err);
-    if (state.currentTrack) {
-      playWithDirectStream(state.currentTrack);
+    console.warn("YouTube Player error (code: " + (err ? err.data : "") + "):", err);
+    if (err && (err.data === 150 || err.data === 101 || err.data === 2)) {
+      showToast("Embedding restricted by artist. Skipping to next...");
+      setTimeout(() => playNextTrack(), 800);
     }
   }
 
@@ -310,7 +312,13 @@
       } catch (_) {}
     }
     if (ytPlayerReady && ytPlayer && ytPlayer.loadVideoById) {
-      ytPlayer.loadVideoById(videoId);
+      ytPlayer.loadVideoById({
+        videoId: videoId,
+        suggestedQuality: "small"
+      });
+      try {
+        ytPlayer.playVideo();
+      } catch (_) {}
     }
   }
 
