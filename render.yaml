@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: pixelplay-ytmusic-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt && curl -sL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o yt-dlp && chmod +x yt-dlp
+    startCommand: python app.py $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9

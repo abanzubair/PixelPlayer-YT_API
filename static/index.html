@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>PixelPlay — Material You Music Player</title>
+  <meta name="description" content="PixelPlay — A modern, fluid Material 3 Expressive music player for YouTube Music and local libraries." />
+  <meta name="theme-color" content="#0e0e11" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Google Fonts: Google Sans Rounded / Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="theme-dark">
+  <!-- Dynamic Backdrop Mesh (Updated dynamically per album art) -->
+  <div id="dynamicBackdropMesh" class="dynamic-backdrop-mesh"></div>
+
+  <!-- APP SHELL CONTAINER -->
+  <div class="app-layout">
+    
+    <!-- DESKTOP / TABLET NAVIGATION RAIL -->
+    <aside class="nav-rail">
+      <div class="nav-brand" id="railBrandBtn">
+        <div class="brand-logo-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+          </svg>
+        </div>
+        <span class="brand-title">PixelPlay</span>
+      </div>
+
+      <nav class="rail-links">
+        <button class="rail-item active" data-view="home" title="Home">
+          <div class="rail-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </div>
+          <span>Home</span>
+        </button>
+
+        <button class="rail-item" data-view="explore" title="Explore">
+          <div class="rail-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+            </svg>
+          </div>
+          <span>Explore</span>
+        </button>
+
+        <button class="rail-item" data-view="liked" title="Liked Songs">
+          <div class="rail-pill">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+          <span>Favorites</span>
+        </button>
+
+        <button class="rail-item" data-view="playlists" title="Playlists">
+          <div class="rail-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18V5l12-2v13"></path>
+              <circle cx="6" cy="18" r="3"></circle>
+              <circle cx="18" cy="16" r="3"></circle>
+            </svg>
+          </div>
+          <span>Playlists</span>
+        </button>
+
+        <button class="rail-item" data-view="settings" title="Settings">
+          <div class="rail-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="rail-footer">
+        <button id="railShortcutsBtn" class="rail-icon-btn" title="Keyboard Shortcuts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+            <line x1="6" y1="8" x2="6.01" y2="8"></line>
+            <line x1="10" y1="8" x2="10.01" y2="8"></line>
+            <line x1="14" y1="8" x2="14.01" y2="8"></line>
+            <line x1="18" y1="8" x2="18.01" y2="8"></line>
+            <line x1="6" y1="12" x2="6.01" y2="12"></line>
+            <line x1="18" y1="12" x2="18.01" y2="12"></line>
+            <line x1="10" y1="16" x2="14" y2="16"></line>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN APP VIEWPORT -->
+    <div class="main-viewport">
+      
+      <!-- TOP HEADER BAR -->
+      <header class="app-topbar">
+        <div class="mobile-brand" id="mobileBrandBtn">
+          <div class="brand-logo-icon small">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+            </svg>
+          </div>
+          <span class="brand-title">PixelPlay</span>
+        </div>
+
+        <!-- SEARCH INPUT BOX -->
+        <div class="search-box-container">
+          <div class="search-box-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="globalSearchInput"
+              placeholder="Search songs, artists, albums, podcasts..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <span class="search-kbd-badge">/</span>
+            <button id="clearSearchBtn" class="clear-search-btn" title="Clear">✕</button>
+          </div>
+
+          <!-- AUTOCOMPLETE DROPDOWN -->
+          <div id="searchSuggestionsList" class="search-suggestions-dropdown hidden"></div>
+        </div>
+
+        <!-- TOP BAR ACTIONS -->
+        <div class="topbar-actions">
+          <div class="provider-badge" title="Streaming via YouTube Music Web Engine">
+            <span class="status-dot"></span>
+            <span class="provider-text">YT Music</span>
+          </div>
+
+          <button id="topQueueBtn" class="topbar-icon-btn" title="Up Next Queue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6"></line>
+              <line x1="8" y1="12" x2="21" y2="12"></line>
+              <line x1="8" y1="18" x2="21" y2="18"></line>
+              <line x1="3" y1="6" x2="3.01" y2="6"></line>
+              <line x1="3" y1="12" x2="3.01" y2="12"></line>
+              <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            <span id="topQueueBadge" class="badge-count hidden">0</span>
+          </button>
+
+          <button id="topLyricsBtn" class="topbar-icon-btn" title="Lyrics">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- SCROLLABLE CONTENT BODY -->
+      <div class="content-scroll-container" id="contentScrollContainer">
+        
+        <!-- 1. HOME VIEW -->
+        <section id="viewHome" class="app-view active">
+          
+          <!-- HERO GREETING -->
+          <div class="greeting-banner">
+            <div class="greeting-text">
+              <h1 id="greetingHeadline">Welcome to PixelPlay</h1>
+              <p>Explore unlimited music, charts, and synchronized lyrics</p>
+            </div>
+            <div class="greeting-chips">
+              <button class="greeting-chip active" data-home-tab="trending">🔥 Top Trending</button>
+              <button class="greeting-chip" data-home-tab="quick_picks">✨ Quick Picks</button>
+              <button class="greeting-chip" data-home-tab="history">🕒 Recently Played</button>
+            </div>
+          </div>
+
+          <!-- QUICK PICKS CAROUSEL -->
+          <div class="section-container" id="quickPicksSection">
+            <div class="section-header">
+              <h2 class="section-title">✨ Quick Picks For You</h2>
+              <button class="section-action-btn" id="playAllQuickPicksBtn">▶ Play All</button>
+            </div>
+            <div class="horizontal-scroll-row" id="quickPicksRow">
+              <!-- Dynamically populated cards -->
+            </div>
+          </div>
+
+          <!-- TRENDING SONGS SECTION -->
+          <div class="section-container">
+            <div class="section-header">
+              <h2 class="section-title">🔥 Trending Worldwide</h2>
+              <span id="trendingTrackCount" class="section-meta">Top 20 Tracks</span>
+            </div>
+
+            <!-- LOADING SKELETON -->
+            <div id="homeLoadingSkeleton" class="tracks-skeleton-grid hidden">
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+
+            <!-- TRENDING TRACKS GRID -->
+            <div class="tracks-grid" id="homeTrendingGrid"></div>
+          </div>
+
+          <!-- RECENTLY PLAYED SECTION -->
+          <div class="section-container hidden" id="recentHistorySection">
+            <div class="section-header">
+              <h2 class="section-title">🕒 Recently Played</h2>
+              <button class="section-action-btn" id="clearHistoryBtn">Clear</button>
+            </div>
+            <div class="horizontal-scroll-row" id="historyCardsRow"></div>
+          </div>
+
+        </section>
+
+        <!-- 2. EXPLORE VIEW -->
+        <section id="viewExplore" class="app-view">
+          
+          <!-- CATEGORY / GENRE PILLS -->
+          <div class="genre-pills-bar">
+            <button class="genre-pill active" data-genre="Top Hits">🔥 Trending</button>
+            <button class="genre-pill" data-genre="Pop">✨ Pop</button>
+            <button class="genre-pill" data-genre="Hip-Hop">🎧 Hip-Hop</button>
+            <button class="genre-pill" data-genre="Rock">🎸 Rock</button>
+            <button class="genre-pill" data-genre="Lofi Chill">☕ Lofi & Chill</button>
+            <button class="genre-pill" data-genre="Electronic EDM">⚡ Electronic</button>
+            <button class="genre-pill" data-genre="R&B Soul">🌸 R&B</button>
+            <button class="genre-pill" data-genre="Bollywood Hits">💃 Bollywood</button>
+            <button class="genre-pill" data-genre="Acoustic">🧘 Acoustic</button>
+            <button class="genre-pill" data-genre="Jazz">🎷 Jazz</button>
+            <button class="genre-pill" data-genre="Workout">💪 Workout</button>
+          </div>
+
+          <!-- SEARCH FILTERS -->
+          <div class="explore-filters-row">
+            <div class="filter-buttons-group">
+              <button class="filter-tab-btn active" data-filter="songs">Songs</button>
+              <button class="filter-tab-btn" data-filter="videos">Videos</button>
+            </div>
+            <span id="exploreResultsCount" class="explore-results-meta"></span>
+          </div>
+
+          <!-- EXPLORE RESULTS CONTAINER -->
+          <div class="section-container">
+            <div id="exploreLoading" class="loading-state hidden">
+              <div class="pixel-spinner"></div>
+              <p>Searching YouTube Music...</p>
+            </div>
+
+            <div id="exploreEmpty" class="empty-state hidden">
+              <div class="empty-state-icon">🔍</div>
+              <h3>No results found</h3>
+              <p>Try searching for a different track title, artist name, or genre.</p>
+            </div>
+
+            <div class="tracks-grid" id="exploreTracksGrid"></div>
+          </div>
+
+        </section>
+
+        <!-- 3. LIKED SONGS VIEW -->
+        <section id="viewLiked" class="app-view">
+          <div class="playlist-hero-banner liked-gradient">
+            <div class="playlist-hero-art">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+            </div>
+            <div class="playlist-hero-details">
+              <span class="playlist-type-tag">PLAYLIST</span>
+              <h1 class="playlist-hero-title">Liked Songs</h1>
+              <p class="playlist-hero-meta" id="likedSongsMeta">0 songs</p>
+              <div class="playlist-hero-actions">
+                <button class="hero-play-fab" id="playAllLikedBtn">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  <span>Play</span>
+                </button>
+                <button class="hero-shuffle-btn" id="shuffleLikedBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                  </svg>
+                  <span>Shuffle</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tracklist-container" id="likedTracklist">
+            <!-- Populated dynamically -->
+          </div>
+        </section>
+
+        <!-- 4. PLAYLISTS VIEW -->
+        <section id="viewPlaylists" class="app-view">
+          <div class="section-container">
+            <div class="section-header">
+              <h2 class="section-title">Your Playlists</h2>
+              <button class="section-action-btn" id="createPlaylistBtn">+ New Playlist</button>
+            </div>
+            <div class="playlists-grid" id="userPlaylistsGrid">
+              <!-- Custom Playlists Cards -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. SETTINGS VIEW -->
+        <section id="viewSettings" class="app-view">
+          <div class="settings-container">
+            <h2 class="settings-headline">Settings & Appearance</h2>
+
+            <div class="settings-card">
+              <h3 class="settings-group-title">🎨 Theme Accent</h3>
+              <p class="settings-group-desc">Select your favorite PixelPlay Material You accent color</p>
+              <div class="theme-accent-picker">
+                <button class="accent-dot active" style="--dot-color: #8ab4f8;" data-accent="pixel-blue" title="Pixel Blue"></button>
+                <button class="accent-dot" style="--dot-color: #a8c7fa;" data-accent="sky-blue" title="Sky Blue"></button>
+                <button class="accent-dot" style="--dot-color: #c4eed0;" data-accent="sage-green" title="Sage Green"></button>
+                <button class="accent-dot" style="--dot-color: #d0bcff;" data-accent="lavender" title="Lavender"></button>
+                <button class="accent-dot" style="--dot-color: #ffb4ab;" data-accent="sunset-coral" title="Coral"></button>
+                <button class="accent-dot" style="--dot-color: #fdd663;" data-accent="honey-gold" title="Honey Gold"></button>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3 class="settings-group-title">🎵 Audio & Playback</h3>
+              
+              <div class="settings-row">
+                <div>
+                  <div class="settings-item-title">Continuous Autoplay</div>
+                  <div class="settings-item-desc">Automatically add related songs to queue when current queue ends</div>
+                </div>
+                <label class="material-switch">
+                  <input type="checkbox" id="settingAutoplay" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-row">
+                <div>
+                  <div class="settings-item-title">Vinyl Record Artwork Animation</div>
+                  <div class="settings-item-desc">Animate rotating vinyl record artwork inside full screen player</div>
+                </div>
+                <label class="material-switch">
+                  <input type="checkbox" id="settingVinylMode" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-row">
+                <div>
+                  <div class="settings-item-title">Audio Frequency Visualizer</div>
+                  <div class="settings-item-desc">Display dynamic wave visualizer on full screen player</div>
+                </div>
+                <label class="material-switch">
+                  <input type="checkbox" id="settingVisualizer" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <h3 class="settings-group-title">ℹ️ About PixelPlay</h3>
+              <p class="settings-info-text">PixelPlay Web Player v2.0 • Material 3 Expressive UI Engine • Powered by YouTube Music API</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING PIXELPLAY MINI PLAYER (BAR) -->
+  <div id="floatingMiniPlayer" class="floating-mini-player hidden">
+    <!-- Wave Progress along bottom of miniplayer -->
+    <div class="mini-progress-track">
+      <div id="miniProgressFill" class="mini-progress-fill"></div>
+    </div>
+
+    <div class="mini-player-body">
+      <!-- Artwork -->
+      <div class="mini-art-wrapper" id="miniArtClickTarget">
+        <img id="miniThumb" src="" alt="" class="mini-thumb" />
+        <div id="miniThumbPlaceholder" class="mini-thumb-placeholder">🎵</div>
+      </div>
+
+      <!-- Song Meta -->
+      <div class="mini-info" id="miniInfoClickTarget">
+        <div id="miniTitle" class="mini-title">No Track Playing</div>
+        <div id="miniArtist" class="mini-artist">Select a song to start listening</div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="mini-actions">
+        <button id="miniLikeBtn" class="mini-icon-btn" title="Like">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+
+        <button id="miniPlayPauseBtn" class="mini-play-fab" title="Play/Pause">
+          <svg id="miniPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="miniPauseIcon" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+
+        <button id="miniNextBtn" class="mini-icon-btn" title="Next Track">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPANDABLE FULL SCREEN NOW PLAYING MODAL -->
+  <div id="fullPlayerModal" class="full-player-modal">
+    <!-- Dynamic Blur Canvas Backdrop -->
+    <div id="fullPlayerBackdrop" class="full-player-backdrop"></div>
+
+    <div class="full-player-container">
+      
+      <!-- TOP BAR -->
+      <header class="full-player-topbar">
+        <button id="collapsePlayerBtn" class="full-icon-btn" title="Minimize">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <div class="full-header-info">
+          <span class="full-header-badge">PLAYING FROM</span>
+          <span id="fullHeaderContext" class="full-header-context">YouTube Music</span>
+        </div>
+
+        <button id="fullMoreOptionsBtn" class="full-icon-btn" title="Options">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="12" cy="5" r="2"></circle>
+            <circle cx="12" cy="19" r="2"></circle>
+          </svg>
+        </button>
+      </header>
+
+      <!-- ARTWORK / VINYL / VISUALIZER CENTERPIECE -->
+      <div class="full-art-stage">
+        <div class="vinyl-disc-container" id="vinylContainer">
+          <div class="vinyl-record" id="vinylRecord">
+            <img id="fullAlbumArt" src="" alt="" class="full-album-art" />
+            <div class="vinyl-center-pin"></div>
+          </div>
+        </div>
+
+        <!-- Dynamic Audio Visualizer Canvas -->
+        <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
+      </div>
+
+      <!-- METADATA & FAVORITE BUTTON -->
+      <div class="full-meta-row">
+        <div class="full-meta-text">
+          <h2 id="fullSongTitle" class="full-song-title">Song Title</h2>
+          <div class="full-artist-wrapper">
+            <span id="fullSongArtist" class="full-song-artist">Artist Name</span>
+            <span id="fullSongAlbum" class="full-song-album"></span>
+          </div>
+        </div>
+
+        <button id="fullHeartBtn" class="full-heart-btn" title="Favorite">
+          <svg id="fullHeartIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- WAVY MATERIAL 3 SEEKBAR -->
+      <div class="full-seekbar-section">
+        <div class="wavy-slider-container" id="wavySliderContainer">
+          <div class="wavy-slider-track">
+            <div id="wavySliderFill" class="wavy-slider-fill"></div>
+            <div id="wavySliderThumb" class="wavy-slider-thumb"></div>
+          </div>
+        </div>
+        <div class="full-timestamps-row">
+          <span id="fullCurrentTime">0:00</span>
+          <span id="fullTotalTime">0:00</span>
+        </div>
+      </div>
+
+      <!-- CONTROLS ROW -->
+      <div class="full-controls-row">
+        <button id="fullShuffleBtn" class="ctrl-icon-btn" title="Shuffle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 3 21 3 21 8"></polyline>
+            <line x1="4" y1="20" x2="21" y2="3"></line>
+            <polyline points="21 16 21 21 16 21"></polyline>
+            <line x1="15" y1="15" x2="21" y2="21"></line>
+            <line x1="4" y1="4" x2="9" y2="9"></line>
+          </svg>
+        </button>
+
+        <button id="fullPrevBtn" class="ctrl-icon-btn" title="Previous">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+
+        <button id="fullPlayPauseFab" class="full-play-fab" title="Play/Pause">
+          <svg id="fullPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="fullPauseIcon" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+
+        <button id="fullNextBtn" class="ctrl-icon-btn" title="Next">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+
+        <button id="fullRepeatBtn" class="ctrl-icon-btn" title="Repeat Mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="17 1 21 5 17 9"></polyline>
+            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+            <polyline points="7 23 3 19 7 15"></polyline>
+            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+          </svg>
+          <span id="fullRepeatBadge" class="repeat-badge hidden">1</span>
+        </button>
+      </div>
+
+      <!-- BOTTOM SHEET SWITCHER BUTTONS (LYRICS / UP NEXT / VOLUME) -->
+      <div class="full-bottom-nav">
+        <button id="fullOpenLyricsBtn" class="full-pill-tab-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span>Lyrics</span>
+        </button>
+
+        <div class="full-volume-pill">
+          <svg id="fullVolIcon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+          <input type="range" id="fullVolumeSlider" min="0" max="100" value="80" class="full-volume-range" />
+        </div>
+
+        <button id="fullOpenQueueBtn" class="full-pill-tab-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <span>Up Next</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SLIDE-UP DRAWER (UP NEXT QUEUE & SYNCHRONIZED LYRICS) -->
+  <div id="sideDrawerModal" class="side-drawer-modal">
+    <div class="side-drawer-backdrop" id="drawerBackdrop"></div>
+    <div class="side-drawer-card">
+      <div class="drawer-drag-handle"></div>
+      
+      <div class="drawer-header">
+        <div class="drawer-tabs">
+          <button class="drawer-tab-btn active" id="tabBtnQueue">Up Next Queue</button>
+          <button class="drawer-tab-btn" id="tabBtnLyrics">Karaoke Lyrics</button>
+        </div>
+        <button id="closeDrawerBtn" class="drawer-close-btn" title="Close">✕</button>
+      </div>
+
+      <div class="drawer-body">
+        
+        <!-- 1. QUEUE TAB CONTENT -->
+        <div id="drawerQueueContent" class="drawer-content-pane active">
+          <div class="queue-toolbar">
+            <span id="queueItemCount" class="queue-meta-text">0 tracks in queue</span>
+            <button id="clearQueueBtn" class="clear-queue-pill">Clear Queue</button>
+          </div>
+          <div class="queue-list" id="queueListContainer">
+            <!-- Queue items -->
+          </div>
+        </div>
+
+        <!-- 2. LYRICS TAB CONTENT -->
+        <div id="drawerLyricsContent" class="drawer-content-pane">
+          <div class="lyrics-scroll-box" id="lyricsScrollBox">
+            <div id="lyricsLinesContainer" class="lyrics-lines-wrapper">
+              <div class="lyrics-placeholder-box">Loading lyrics...</div>
+            </div>
+            <div id="lyricsSourceMeta" class="lyrics-source-tag"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SHORTCUTS HELP MODAL -->
+  <div id="shortcutsDialog" class="modal-dialog-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>⌨️ Keyboard Shortcuts</h3>
+        <button id="closeShortcutsDialogBtn" class="modal-close-btn">✕</button>
+      </div>
+      <div class="shortcuts-grid">
+        <div class="shortcut-item"><kbd>Space</kbd> or <kbd>K</kbd><span>Play / Pause</span></div>
+        <div class="shortcut-item"><kbd>J</kbd> / <kbd>L</kbd><span>Seek -10s / +10s</span></div>
+        <div class="shortcut-item"><kbd>N</kbd> / <kbd>P</kbd><span>Next / Previous Track</span></div>
+        <div class="shortcut-item"><kbd>M</kbd><span>Mute / Unmute</span></div>
+        <div class="shortcut-item"><kbd>/</kbd><span>Quick Focus Search</span></div>
+        <div class="shortcut-item"><kbd>Q</kbd><span>Open Up Next Queue</span></div>
+        <div class="shortcut-item"><kbd>C</kbd><span>Open Lyrics</span></div>
+        <div class="shortcut-item"><kbd>F</kbd><span>Expand / Minimize Player</span></div>
+        <div class="shortcut-item"><kbd>Esc</kbd><span>Close Overlays / Modals</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" data-view="home">
+      <div class="nav-icon-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+      </div>
+      <span>Home</span>
+    </button>
+
+    <button class="mobile-nav-item" data-view="explore">
+      <div class="nav-icon-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+        </svg>
+      </div>
+      <span>Explore</span>
+    </button>
+
+    <button class="mobile-nav-item" data-view="liked">
+      <div class="nav-icon-pill">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <span>Favorites</span>
+    </button>
+
+    <button class="mobile-nav-item" data-view="playlists">
+      <div class="nav-icon-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+      </div>
+      <span>Library</span>
+    </button>
+
+    <button class="mobile-nav-item" data-view="settings">
+      <div class="nav-icon-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </div>
+      <span>Settings</span>
+    </button>
+  </nav>
+
+  <!-- HIDDEN BACKGROUND YOUTUBE IFRAME PLAYER -->
+  <div class="hidden-yt-player-container">
+    <div id="ytPlayer"></div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- YouTube IFrame API Script -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- Application Logic -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
